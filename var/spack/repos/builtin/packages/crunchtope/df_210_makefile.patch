@@ -1,0 +1,37 @@
+--- Makefile	2024-12-04 16:07:00.000000000 -0800
++++ Makefile	2024-12-05 17:00:33.000000000 -0800
+@@ -1,6 +1,8 @@
+ ALL: CrunchMain
+ 
+-FFLAGS  = -w -ffpe-trap=invalid,overflow,zero   
++# Yoder: patching this Makefile:
++#FFLAGS  = -w -ffpe-trap=invalid,overflow,zero   
++#FFLAGS  = -Wall -fallow-argument-mismatch -Wno-lto-type-mismatch -w  -ffpe-trap=invalid,overflow,zero -ffree-line-length-none -Wno-unused-dummy-argument 
+ 
+ SOURCEF = \
+           crunchtype.F90\
+@@ -334,7 +336,11 @@
+           read_pumplocations.F90\
+           interp3.F90\
+           FRACTUREAPERTURE.F90\
+-
++          read_pumptimeseriesfile.F90\
++          read_pumplocationsfile.F90\
++          read_pump_timeseries2.F90\
++          read_watertablefile.F90\
++          read_watertable_timeseries.F90\
+ 
+ OBJSF  =  crunchtype.o\
+           params.o\
+@@ -667,6 +673,11 @@
+           read_pumplocations.o\
+           interp3.o\
+           FRACTUREAPERTURE.o\
++          read_pumptimeseriesfile.o\
++          read_pumplocationsfile.o\
++          read_pump_timeseries2.o\
++          read_watertablefile.o\
++          read_watertable_timeseries.o\
+ 
+ LOCDIR   = ${CrunchTope_Dir}
+ 
