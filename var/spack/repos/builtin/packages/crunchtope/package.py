@@ -56,12 +56,16 @@ class Crunchtope(MakefilePackage):
     #
     #Add dependencies if required.
     depends_on("petsc+batch", when="+batch")
+    # TODO: better evaluate the PETSC requirement(s). Environment is currently configured with our standard,
+    #   +batch +fftw +hwloc +libyaml +libpng +jpeg .
+    #   +batch is required on Sherlock, to get around the `mpiexec` vs `srun` issue, but I am not sure what else we actually require.
+    #   Also, maybe add some sort of +O {0,1,2,3} option for optimization?
     depends_on("petsc@3.21~mpi", when="~mpi")
     depends_on("petsc@3.21+mpi", when="+mpi")
     depends_on("blas", when="+lapack")
     depends_on("lapack", when="+lapack")
     #
-    patch('df_210_makefile.patch', when="@2.10")
+    patch('df_210_makefile.patch', level=0, when="@2.10")
     #
     def edit(self, spec, prefix):
          #
@@ -74,7 +78,8 @@ class Crunchtope(MakefilePackage):
          #
          # a hack to provide working flags for gcc:
          if False and self.compiler.name == "gcc":
-             makefile.filter("FFLAGS  = -w -ffpe-trap=invalid,overflow,zero", "FFLAGS  = -Wall -fallow-argument-mismatch -Wno-lto-type-mismatch -w  -ffpe-trap=invalid,overflow,zero -ffree-line-length-none -Wno-unused-dummy-argument ")
+             #makefile.filter("FFLAGS  = -w -ffpe-trap=invalid,overflow,zero", "FFLAGS  = -Wall -fallow-argument-mismatch -Wno-lto-type-mismatch -w  -ffpe-trap=invalid,overflow,zero -ffree-line-length-none -Wno-unused-dummy-argument ")
+             pass
 
     def install(self, spec, prefix):
         # https://spack.readthedocs.io/en/latest/build_systems/makefilepackage.html#variables-to-watch-out-for
@@ -104,5 +109,5 @@ class Crunchtope(MakefilePackage):
     def setup_build_environment(self, env):
         env.set("PETSC_DIR", self.spec["petsc"].prefix)
         #
-        env.set("FF2", "-Wall -fallow-argument-mismatch -Wno-lto-type-mismatch -w  -ffpe-trap=invalid,overflow,zero', '-ffree-line-length-none', '-ffree-line-length-0', '-Wno-unused-dummy-argument ")
+        #env.set("FF2", "-Wall -fallow-argument-mismatch -Wno-lto-type-mismatch -w  -ffpe-trap=invalid,overflow,zero', '-ffree-line-length-none', '-ffree-line-length-0', '-Wno-unused-dummy-argument ")
 
