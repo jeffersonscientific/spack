@@ -262,6 +262,10 @@ class Vtk(CMakePackage):
             elif "@8:" in self.spec:
                 env.append_flags("CFLAGS", "-DH5_USE_18_API")
                 env.append_flags("CXXFLAGS", "-DH5_USE_18_API")
+        # yoder:
+        if "@8:" in self.spec:
+            env.append_flags("CXXFLAGS", "-gdwarf-4")
+            env.append_flags("LDFLAGS", "-gdwarf-4")
 
     def cmake_args(self):
         spec = self.spec

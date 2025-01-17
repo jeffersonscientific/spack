@@ -24,10 +24,10 @@ from spack.package import *
 
 
 class Mpas(CMakePackage):
-    """FIXME: Put a proper description of your package here."""
+    """"""
 
     # FIXME: Add a proper url for your package's homepage here.
-    homepage = "https://www.example.com"
+    homepage = "https://mpas-dev.github.io/"
     url = "https://github.com/MPAS-Dev/MPAS-Model/archive/refs/tags/v8.2.2.zip"
 
     # FIXME: Add a list of GitHub accounts to
@@ -57,14 +57,31 @@ class Mpas(CMakePackage):
     # FIXME: Add dependencies if required.
     # depends_on("foo")
     depends_on("mpi")
-    depends_on("netcdf-c@4.4:^mpi")
+    depends_on("netcdf-c@4.4: +mpi")
     depends_on("netcdf-fortran")
     depends_on("parallel-netcdf@1.8:")
     depends_on("parallelio@1.71:")
+    #
+    depends_on("metis", type='run')
+    
+#    variant("cores", values=str,default="atmosphere init_atmosphere", description="specify which cores to compile")
+#    variant("do_physics", values=bool, default=True, description="Use built-in physics schemes.")
+#    variant("double", values=bool, default=True, description="Use double precision; set to False (or ~) for single precision")
+#    variant('openmp', values=bool,default=False,description="Use OpenMP")
     #
     def cmake_args(self):
         # FIXME: Add arguments other than
         # FIXME: CMAKE_INSTALL_PREFIX and CMAKE_BUILD_TYPE
         # FIXME: If not needed delete this function
+#        cores = self.spec.variants["cores"].value
+#        double = str(self.spec.variants["double"].value).upper()
+#        openmp = str(self.spec.variants['openmp'].value).upper()
+
+#        args = [
+#           f'-DMPAS_CORES="{cores}"',
+#           f'-DMPAS_DOUBLE_PRECISION={double}',
+#           f'-DMPAS_OPENMP={openmp}',
+#           f'-DDO_PHYSICS={str(self.spec.variants["do_physics"].value).upper()}'
+#        ]
         args = []
         return args

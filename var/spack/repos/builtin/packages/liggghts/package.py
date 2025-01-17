@@ -31,8 +31,12 @@ class Liggghts(MakefilePackage):
     variant("gzip", default=True, description="Enable GZIP for some input and output files")
     variant("debug", default=False, description="Builds a debug version of the executable")
     variant("profile", default=False, description="Generate profiling code")
-
-    depends_on("vtk@6.1.0:8.2.0")
+    #
+    # yoder:
+    variant("vtk", default=True, description="Build with VTK")    
+    
+    depends_on("vtk@6.1.0:8.2.0", when="+vtk")
+    #depends_on("vtk@6.1.0:")
     depends_on("mpi", when="+mpi")
     depends_on("jpeg", when="+jpeg")
     depends_on("zlib-api", when="+gzip")
@@ -57,15 +61,17 @@ class Liggghts(MakefilePackage):
 
         # Upstream misleadingly suggests that VTK is an optional
         # dependency, but VTK is always needed to create an output file!
-        vtk = spec["vtk"]
-        makefile.filter(
-            r"^#(VTK_INC_USR=-I).*",
-            r"\1{0}".format(
-                # Glob for the VTK subdirectory like "vtk-8.1".
-                glob(os.path.join(vtk.prefix.include, "vtk*"))[0]
-            ),
-        )
-        makefile.filter(r"^#(VTK_LIB_USR=-L).*", r"\1{0}".format(vtk.prefix.lib))
+        # yoder: adding logic to make vtk optional.
+        if spec.satisfies("+vtk"):
+            vtk = spec["vtk"]
+            makefile.filter(
+                r"^#(VTK_INC_USR=-I).*",
+                r"\1{0}".format(
+                    # Glob for the VTK subdirectory like "vtk-8.1".
+                    glob(os.path.join(vtk.prefix.include, "vtk*"))[0]
+                ),
+            )
+            makefile.filter(r"^#(VTK_LIB_USR=-L).*", r"\1{0}".format(vtk.prefix.lib))
 
         if spec.satisfies("+mpi"):
             mpi = spec["mpi"]
